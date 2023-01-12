@@ -1,6 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
 import * as dotenv from 'dotenv'
-import { KeyboardButtonPollType, WebAppInfo } from "node-telegram-bot-api";
 
 dotenv.config()
 const token = process.env.TELEGRAM_TOKEN;
@@ -17,12 +16,26 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
+// Matches "/echo [whatever]"
+bot.onText(/\/echo (.+)/, (msg, match) => {
+  // 'msg' is the received Message from Telegram
+  // 'match' is the result of executing the regexp above on the text content
+  // of the message
+
+  const chatId = msg.chat.id;
+  const resp = match?.[1]; // the captured "whatever"
+
+  // send back the matched "whatever" to the chat
+  bot.sendMessage(chatId, resp);
+});
+
+
 bot.on('message', (msg) => {
 
 
   const hi = "hi";
   if (msg.text.toString().toLowerCase().indexOf(hi) === 0) {
-    bot.sendMessage(msg.chat.id,"Hello dear user");
+    bot.sendMessage(msg.from.id, "Hello  " + msg.from.first_name);
   }
 
   const bye = "bye";
